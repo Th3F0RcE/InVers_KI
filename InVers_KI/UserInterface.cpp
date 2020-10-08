@@ -52,14 +52,20 @@ void printMessage()
 
 void printBoard(Game& game)
 {
+	//Variable to store the position 
+	//For a Cell-size of 6, 3 lines are printed for each cell
 	int lineCounter = 0;
+
+	//Loop through every cell in the board-vector
 	for (unsigned int i = 0; i < game.getBoardVector().size(); i++)
 	{
+		//Loop it 6 times(Cell-size)
 		for (int j = 0; j < CELL_SIZE; j++)
 		{
 			//print yellow cells
 			if (game.getBoardVector().at(i) == YELLOW_CELL)
 			{
+				//If in the 2nd line, print Y
 				if (lineCounter == 1 && j == 3)
 				{
 					std::cout << "Y";
@@ -72,6 +78,7 @@ void printBoard(Game& game)
 			//print red cells
 			else if (game.getBoardVector().at(i) == RED_CELL)
 			{
+				//If in the 2nd line, print R
 				if (lineCounter == 1 && j == 3)
 				{
 					std::cout << "R";
@@ -84,6 +91,7 @@ void printBoard(Game& game)
 			//print border cells
 			else if (game.getBoardVector().at(i) == BORDER_CELL)
 			{
+				//If in the 2nd line, print 0
 				if (lineCounter == 1 && j == 3)
 				{
 					std::cout << "0";
@@ -96,6 +104,7 @@ void printBoard(Game& game)
 			//print turned yellow cells
 			else if (game.getBoardVector().at(i) == YELLOW_CELL_TURNED)
 			{
+				//If in the 2nd line, print 1
 				if (lineCounter == 1 && j == 3)
 				{
 					std::cout << "1";
@@ -108,6 +117,7 @@ void printBoard(Game& game)
 			//print turned red cells
 			else if (game.getBoardVector().at(i) == RED_CELL_TURNED)
 			{
+				//If in the 2nd line, print 2
 				if (lineCounter == 1 && j == 3)
 				{
 					std::cout << "2";
@@ -119,13 +129,13 @@ void printBoard(Game& game)
 			}
 		}
 
-		//reset line counter
+		//If 3 lines printed, go to the next line in the board-vector
 		if (lineCounter > 2)
 		{
 			lineCounter = 0;
 			i += 8;
 		}
-		//count up line counter
+		//If not all 3 lines are printed, count up lineCounter and loop through the line again
 		if ((i % 8 == 7) && lineCounter <= 2)
 		{
 			i -= 8;
@@ -138,22 +148,27 @@ void printBoard(Game& game)
 
 void printSituation(Game& game)
 {
-	//Print the last moves that were made
+	//If at least 1 move was made, print the last moves that were made
 	if (game.rounds.size() != 0)
 	{
 		std::cout << "Last Moves:\n";
 
+		//Variable to store how many moves were made already
 		int moves = game.rounds.size();
+
+		//Only show the last 5 moves of each Player
 		int toShow = moves >= 5 ? 5 : moves;
 
 		std::string space = "";
 
+		//Add hard spaces
 		while (toShow--)
 		{
 			if (moves < 10)
 			{
 				space = " ";
 			}
+			//Print out the last moves
 			std::cout << space << moves << " ..... " << game.rounds[moves - 1].yellowMove.c_str() << " | " << game.rounds[moves - 1].redMove.c_str() << "\n";
 			moves--;
 		}
