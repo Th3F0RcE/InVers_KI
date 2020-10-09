@@ -24,6 +24,9 @@
     <ClCompile Include="UserInterface.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="ArtificialIntelligence.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -33,6 +36,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="includes.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="ArtificialIntelligence.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
