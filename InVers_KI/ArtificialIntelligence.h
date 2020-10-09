@@ -13,5 +13,6 @@ public:
 	int strategy;
 
 	void chooseStrategy(char cStrategy);
+	std::vector<char[3]> possibleMoves();
 };
 
