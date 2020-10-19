@@ -2,6 +2,8 @@
 #include "includes.h"
 #include "Game.h"
 
+constexpr auto MAX_MOVES = 24;
+
 class ArtificialIntelligence
 {
 public:
@@ -13,6 +15,6 @@ public:
 	int strategy;
 
 	void chooseStrategy(char cStrategy);
-	std::vector<char[3]> possibleMoves();
+	std::vector<char[2]> possibleMoves(Game& game);
 };
 
