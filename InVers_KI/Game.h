@@ -16,6 +16,7 @@ public:
 	std::vector<int>getBoardVector();	//returns Board Vector
 	std::vector<int>findLineValues(int line);	//find the vector-values in a given LINE  
 	std::vector<int>findColumnValues(int column);	//find the vector-values in a given COLUMN
+	std::vector<std::vector<int>> possibleMoves();
 	int getCurrentTurn();	//returns currentTurn
 	void saveStone(char LC, int number, char direction);	//Saves the stone that is pushed out
 	void changeTurn();	//Change the turn

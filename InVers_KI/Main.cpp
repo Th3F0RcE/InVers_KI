@@ -2,11 +2,15 @@
 
 #include "Game.h"
 #include "UserInterface.h"
+#include "ArtificialIntelligence.h"
 
 //----------------------------------------------------------------------------
-// Global variable
+// Global variables
 //----------------------------------------------------------------------------
 Game* current_game = NULL;
+
+ArtificialIntelligence* yellowAI= NULL;
+ArtificialIntelligence* redAI = NULL;
 
 //----------------------------------------------------------------------------
 // Start New Game
@@ -33,6 +37,9 @@ void insertPiece()
 	std::string LC;
 	std::string number;
 	std::string direction;
+
+	//ai = new ArtificialIntelligence();
+	
 
 	//Get user input for if they want to move a line or a column
 	std::cout << "Do you want to move a Line(horizontal) or a Column(vertical)?\n";
@@ -236,6 +243,16 @@ int main(int argc, char* argv[])
 						printBoard(*current_game);
 						printSituation(*current_game);
 					}
+				}
+			}
+			break;
+
+			case 'P':
+			case 'p':
+			{
+				if (current_game != NULL)
+				{
+					printPossibleMoves(*current_game);
 				}
 			}
 			break;

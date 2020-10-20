@@ -137,6 +137,81 @@ std::vector<int> Game::findColumnValues(int column)
 	return values;
 }
 
+std::vector<std::vector<int>> Game::possibleMoves()
+{
+	//Border cells of the Board of the game (NOT the outer border, but the last "movable" stones)
+	std::vector<int> leftBorderCells = findColumnValues(1);
+	std::vector<int> rightBorderCells = findColumnValues(6);
+	std::vector<int> topBorderCells = findLineValues(1);
+	std::vector<int> bottomBorderCells = findLineValues(6);
+
+	//Variable to store all possible moves
+	std::vector<std::vector<int>> allMoves;
+
+	//Variable to store the current Board of the game
+	std::vector<int> currentBoard = getBoardVector();
+
+	//Array to store char value of line/column numbers
+	//char numbers[] = "123456";//{ '1', '2', '3', '4', '5', '6' };
+
+	//Variable to store, who is on turn atm
+	int currentTurn = getCurrentTurn();
+
+	for (int i = 0; i < 6; i++)
+	{
+		//Check if YELLOW is on turn
+		if (currentTurn == 0)
+		{
+			//If a left Border cell is not a turned RED stone, add the move to the vector
+			if (currentBoard.at(leftBorderCells.at(i)) != RED_CELL_TURNED)
+			{
+				allMoves.push_back({ i + 1, LEFT });
+			}
+			//If a right Border cell is not a turned RED stone, add the move to the vector
+			if (currentBoard.at(rightBorderCells.at(i)) != RED_CELL_TURNED)
+			{
+				allMoves.push_back({ i + 1, RIGHT });
+			}
+			//If a top Border cell is not a turned RED stone, add the move to the vector
+			if (currentBoard.at(topBorderCells.at(i)) != RED_CELL_TURNED)
+			{
+				allMoves.push_back({ i + 1, UP });
+			}
+			//If a bottom Border cell is not a turned RED stone, add the move to the vector
+			if (currentBoard.at(bottomBorderCells.at(i)) != RED_CELL_TURNED)
+			{
+				allMoves.push_back({ i + 1, DOWN });
+			}
+		}
+		//Check if RED is on turn
+		else if (true)
+		{
+			//If a left Border cell is not a turned YELLOW stone, add the move to the vector
+			if (currentBoard.at(leftBorderCells.at(i)) != YELLOW_CELL_TURNED)
+			{
+				allMoves.push_back({ i + 1, LEFT });
+			}
+			//If a right Border cell is not a turned YELLOW stone, add the move to the vector
+			if (currentBoard.at(rightBorderCells.at(i)) != YELLOW_CELL_TURNED)
+			{
+				allMoves.push_back({ i + 1, RIGHT });
+			}
+			//If a top Border cell is not a turned YELLOW stone, add the move to the vector
+			if (currentBoard.at(topBorderCells.at(i)) != YELLOW_CELL_TURNED)
+			{
+				allMoves.push_back({ i + 1, UP });
+			}
+			//If a bottom Border cell is not a turned YELLOW stone, add the move to the vector
+			if (currentBoard.at(bottomBorderCells.at(i)) != YELLOW_CELL_TURNED)
+			{
+				allMoves.push_back({ i + 1, DOWN });
+			}
+		}
+	}
+
+	return allMoves;
+}
+
 int Game::getCurrentTurn()
 {
 	return currentTurn;

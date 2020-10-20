@@ -19,7 +19,7 @@ void clearScreen()
 
 void printMenu()
 {
-	std::cout << "Commands: (N)ew Game\t(M)ove\t(Q)uit\t(R)ules\n";
+	std::cout << "Commands: (N)ew Game\t(M)ove\t(P)ossible Moves\t(Q)uit\t(R)ules\n";
 }
 
 void printLogo()
@@ -183,5 +183,31 @@ void printSituation(Game& game)
 
 	//Print the Stone that will be pushed in the board
 	std::cout << "Stone in your hand: " << (game.getCurrentTurn() == Game::YELLOW_PLAYER ? game.yellowNextTurn : game.redNextTurn) << "\n\n";
+}
+
+void printPossibleMoves(Game& game)
+{
+	std::vector<std::vector<int>> moves = game.possibleMoves();
+
+	for (unsigned int k = 0; k < moves.size(); k++)
+	{
+		std::cout << moves.at(k).at(0) << "\t";
+		if (moves.at(k).at(1) == LEFT)
+		{
+			std::cout << "LEFT\n";
+		}
+		else if (moves.at(k).at(1) == RIGHT)
+		{
+			std::cout << "RIGHT\n";
+		}
+		else if (moves.at(k).at(1) == UP)
+		{
+			std::cout << "UP\n";
+		}
+		else if (moves.at(k).at(1) == DOWN)
+		{
+			std::cout << "DOWN\n";
+		}
+	}
 }
 
