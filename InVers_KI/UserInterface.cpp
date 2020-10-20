@@ -181,29 +181,61 @@ void printSituation(Game& game)
 	//Print current turn
 	std::cout << "Current Turn :" << (game.getCurrentTurn() == Game::YELLOW_PLAYER ? "YELLOW" : "RED") << "\n";
 
+	std::string stone = "";
+
 	//Print the Stone that will be pushed in the board
-	std::cout << "Stone in your hand: " << (game.getCurrentTurn() == Game::YELLOW_PLAYER ? game.yellowNextTurn : game.redNextTurn) << "\n\n";
+	if (game.getCurrentTurn() == Game::YELLOW_PLAYER)
+	{
+		if (game.yellowNextTurn == YELLOW_CELL || game.yellowNextTurn == YELLOW_CELL_TURNED)
+		{
+			stone = "YELLOW";
+		}
+		else
+		{
+			stone = "RED";
+		}
+	}
+	else if (game.getCurrentTurn() == Game::RED_PLAYER)
+	{
+		if (game.redNextTurn == YELLOW_CELL || game.redNextTurn == YELLOW_CELL_TURNED)
+		{
+			stone = "YELLOW";
+		}
+		else
+		{
+			stone = "RED";
+		}
+	}
+	std::cout << "Stone in your hand: " << stone << "\n\n";
 }
 
 void printPossibleMoves(Game& game)
 {
+	//Variable to store all possible moves that can be made
 	std::vector<std::vector<int>> moves = game.possibleMoves();
 
+	//Loop through all elements in the list of possible moves
 	for (unsigned int k = 0; k < moves.size(); k++)
 	{
+		//Print line/column
 		std::cout << moves.at(k).at(0) << "\t";
+
+		//Print LEFT if direction is LEFT
 		if (moves.at(k).at(1) == LEFT)
 		{
 			std::cout << "LEFT\n";
 		}
+		//Print RIGHT if direction is RIGHT
 		else if (moves.at(k).at(1) == RIGHT)
 		{
 			std::cout << "RIGHT\n";
 		}
+		//Print UP if direction is UP
 		else if (moves.at(k).at(1) == UP)
 		{
 			std::cout << "UP\n";
 		}
+		//Print DOWN if direction is DOWN
 		else if (moves.at(k).at(1) == DOWN)
 		{
 			std::cout << "DOWN\n";

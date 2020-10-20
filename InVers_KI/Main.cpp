@@ -39,7 +39,7 @@ void insertPiece()
 	std::string direction;
 
 	//ai = new ArtificialIntelligence();
-	
+
 
 	//Get user input for if they want to move a line or a column
 	std::cout << "Do you want to move a Line(horizontal) or a Column(vertical)?\n";
@@ -83,12 +83,24 @@ void insertPiece()
 		std::cout << "Choose your direction!\n";
 		std::cout << "(L)eft\t (R)ight: ";
 		getline(std::cin, direction);
+
+		if (std::tolower(direction[0]) == 'u' || std::tolower(direction[0]) == 'd')
+		{
+			createNextMessage("You can only move a line LEFT or RIGHT!");
+			return;
+		}
 	}
 	else if (std::tolower(LC[0]) == 'c')
 	{
 		std::cout << "Choose your direction!\n";
 		std::cout << "(U)p\t (D)own: ";
 		getline(std::cin, direction);
+
+		if (std::tolower(direction[0]) == 'l' || std::tolower(direction[0]) == 'r')
+		{
+			createNextMessage("You can only move a column UP or DOWN!");
+			return;
+		}
 	}
 
 	//Put together whole position to put stone
@@ -247,6 +259,7 @@ int main(int argc, char* argv[])
 			}
 			break;
 
+			//Print all possible moves
 			case 'P':
 			case 'p':
 			{
