@@ -50,12 +50,17 @@ void printMessage()
 	next_message = "";
 }
 
+void printChosenGame()
+{
+
+}
+
 void printBoard(Game& game)
 {
 	//Variable to store the position 
 	//For a Cell-size of 6, 3 lines are printed for each cell
 	int lineCounter = 0;
-
+	
 	//Loop through every cell in the board-vector
 	for (unsigned int i = 0; i < game.getBoardVector().size(); i++)
 	{

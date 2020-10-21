@@ -15,4 +15,5 @@ void printMessage();
 void printBoard(Game& game);
 void printSituation(Game& game);	//Print all relevant information
 void printPossibleMoves(Game& game);
+void printChosenGame();
 

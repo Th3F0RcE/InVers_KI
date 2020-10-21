@@ -9,8 +9,8 @@
 //----------------------------------------------------------------------------
 Game* current_game = NULL;
 
-ArtificialIntelligence* yellowAI= NULL;
-ArtificialIntelligence* redAI = NULL;
+ArtificialIntelligence* yellowAI;
+ArtificialIntelligence* redAI;
 
 //----------------------------------------------------------------------------
 // Start New Game
@@ -21,8 +21,46 @@ void newGame()
 	{
 		delete current_game;
 	}
-
+	
 	current_game = new Game();
+	bool inputCorrect = false;
+
+	std::string input = "";
+
+	std::cout << "What kind of game do you want to create?\n";
+	std::cout << "(1) = PVP\t(2) = PVE\t(3) = EVE\n";
+
+	getline(std::cin, input);
+
+	if (input.length() != 1)
+	{
+		std::cout << "Invalid input!";
+		return;
+	}
+
+	switch (input[0])
+	{
+	case '1':
+		inputCorrect = true;
+		break;
+
+	case '2':
+		inputCorrect = true;
+		redAI = new ArtificialIntelligence();
+		break;
+	case '3':
+		inputCorrect = true;
+		redAI = new ArtificialIntelligence();
+		yellowAI = new ArtificialIntelligence();
+		break;
+	}
+
+	if (inputCorrect)
+	{
+		clearScreen();
+		printLogo();
+		printBoard(*current_game);
+	}
 }
 
 //----------------------------------------------------------------------------
@@ -212,6 +250,11 @@ int main(int argc, char* argv[])
 		printMessage();
 		printMenu();
 
+		if (yellowAI != NULL)
+		{
+			continue;
+		}
+
 		//get input from user
 		std::cout << "type here: ";
 		getline(std::cin, input);
@@ -231,9 +274,6 @@ int main(int argc, char* argv[])
 			case 'n':
 			{
 				newGame();
-				clearScreen();
-				printLogo();
-				printBoard(*current_game);
 			}
 			break;
 

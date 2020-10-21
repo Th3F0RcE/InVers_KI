@@ -7,6 +7,7 @@ constexpr auto MAX_MOVES = 24;
 class ArtificialIntelligence
 {
 public:
+	ArtificialIntelligence();
 	enum Strategies
 	{
 		RANDOM = 0
