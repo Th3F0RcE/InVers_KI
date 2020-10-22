@@ -2,6 +2,7 @@
 
 ArtificialIntelligence::ArtificialIntelligence()
 {
+	strategy = RANDOM;
 }
 
 void ArtificialIntelligence::chooseStrategy(char cStrategy)

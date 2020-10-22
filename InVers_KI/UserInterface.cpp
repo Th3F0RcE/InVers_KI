@@ -50,9 +50,26 @@ void printMessage()
 	next_message = "";
 }
 
-void printChosenGame()
+void printChosenGame(bool yellowAIExists, bool redAIExists)
 {
-
+	if (redAIExists)
+	{
+		//If Red- and Yellow AI exist, its an EVE Game
+		if (yellowAIExists)
+		{
+			std::cout << "You chose an EVE Game!";
+		}
+		//If Red AI exists, but no Yellow AI, its a PVE Game
+		else
+		{
+			std::cout << "You chose a PVE Game!";
+		}
+	}
+	//If no AI exists, its a PVP Game
+	else
+	{
+		std::cout << "You chose a PVP Game!";
+	}
 }
 
 void printBoard(Game& game)

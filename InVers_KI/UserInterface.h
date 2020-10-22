@@ -7,13 +7,13 @@
 void createNextMessage(std::string msg);
 void appendToNextMessage(std::string msg);
 
-void clearScreen();
-void printMenu();
-void printLogo();
-void printRules();
-void printMessage();
-void printBoard(Game& game);
+void clearScreen();	//Clear the Console
+void printMenu();	//Print the Menu (Commands)
+void printLogo();	//Print the Logo
+void printRules();	//Print the Game Rules
+void printMessage();	//Print the Next Message
+void printBoard(Game& game);	//Print the Board
 void printSituation(Game& game);	//Print all relevant information
-void printPossibleMoves(Game& game);
-void printChosenGame();
+void printPossibleMoves(Game& game);	//Print all moves that are possible for the current Player
+void printChosenGame(bool yellowAIExists, bool redAIExists); //Print the Game Mode, that was chosen
 

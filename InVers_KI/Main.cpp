@@ -17,49 +17,81 @@ ArtificialIntelligence* redAI;
 //----------------------------------------------------------------------------
 void newGame()
 {
+	//If there already exists a game, delete it
 	if (NULL != current_game)
 	{
 		delete current_game;
 	}
+	//If there already exists a yellow AI, delete it
+	if (NULL != yellowAI)
+	{
+		delete yellowAI;
+	}
+	//If there already exists a red AI, delete it
+	if (NULL != redAI)
+	{
+		delete redAI;
+	}
 	
+	//Create a new Game
 	current_game = new Game();
+	
+	//Variable to check if the input for the Game Mode was correct
 	bool inputCorrect = false;
 
+	//Variable to store the User Input
 	std::string input = "";
 
+	//Output
 	std::cout << "What kind of game do you want to create?\n";
 	std::cout << "(1) = PVP\t(2) = PVE\t(3) = EVE\n";
 
+	//Get User-Input
 	getline(std::cin, input);
 
+	//If more than 1 character was given, return
 	if (input.length() != 1)
 	{
 		std::cout << "Invalid input!";
 		return;
 	}
 
+	//Variable to check if the AI's exist
+	bool yellowAIExists = false; 
+	bool redAIExists = false;
+
 	switch (input[0])
 	{
+		//1 = PVP
 	case '1':
 		inputCorrect = true;
 		break;
-
+		//2 = PVE
 	case '2':
 		inputCorrect = true;
 		redAI = new ArtificialIntelligence();
+		redAIExists = true;
 		break;
+		//3 = EVE
 	case '3':
 		inputCorrect = true;
 		redAI = new ArtificialIntelligence();
 		yellowAI = new ArtificialIntelligence();
+		redAIExists = true;
+		yellowAIExists = true;
 		break;
+
+	default:
+		std::cout << "Invalid input!";
 	}
 
+	//If the User-Input was correct, "open" the game
 	if (inputCorrect)
 	{
 		clearScreen();
 		printLogo();
 		printBoard(*current_game);
+		printChosenGame(yellowAIExists, redAIExists);
 	}
 }
 
@@ -252,7 +284,7 @@ int main(int argc, char* argv[])
 
 		if (yellowAI != NULL)
 		{
-			continue;
+			//continue;
 		}
 
 		//get input from user
