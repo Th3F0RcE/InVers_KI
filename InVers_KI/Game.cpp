@@ -27,6 +27,9 @@ Game::Game()
 	yellowNextTurn = YELLOW_CELL_TURNED;
 	redNextTurn = RED_CELL_TURNED;
 
+	//Default Game Mode is PVP
+	currentGameMode = PVP;
+
 	//Go
 	gameFinished = false;
 }
@@ -217,6 +220,11 @@ int Game::getCurrentTurn()
 	return currentTurn;
 }
 
+int Game::getCurrentGameMode()
+{
+	return currentGameMode;
+}
+
 void Game::saveStone(char LC, int number, char direction)
 {
 	//Variable to store the vector-values
@@ -293,6 +301,11 @@ void Game::changeTurn()
 	{
 		currentTurn = YELLOW_PLAYER;
 	}
+}
+
+void Game::changeGameMode(int gameMode)
+{
+	currentGameMode = gameMode;
 }
 
 void Game::countUpTurned()

@@ -5,6 +5,7 @@ class Game
 {
 private:
 	int currentTurn;	//Who is on turn
+	int currentGameMode;	//What is the current Game Mode?
 	bool gameFinished;	//Is the game finished?
 	std::vector<int> boardVector;	//Vector to represent the board
 
@@ -18,8 +19,10 @@ public:
 	std::vector<int>findColumnValues(int column);	//find the vector-values in a given COLUMN
 	std::vector<std::vector<int>> possibleMoves();	//Find all moves that are possible for the Player that is on turn
 	int getCurrentTurn();	//returns currentTurn
+	int getCurrentGameMode();	//Returns Current Game Mode
 	void saveStone(char LC, int number, char direction);	//Saves the stone that is pushed out
 	void changeTurn();	//Change the turn
+	void changeGameMode(int gameMode);	//Change the current Game Mode
 	void countUpTurned();	//Counts up the number of turned stones on the field for each color
 	void shiftRight(int line);	//Move a line to the right
 	void shiftLeft(int line);	//Move a line to the left
@@ -41,6 +44,13 @@ public:
 	{
 		YELLOW_PLAYER = 0,
 		RED_PLAYER = 1
+	};
+
+	enum GameMode
+	{
+		PVP = 1,
+		PVE = 2,
+		EVE = 3
 	};
 
 	//Store all moves

@@ -15,5 +15,5 @@ void printMessage();	//Print the Next Message
 void printBoard(Game& game);	//Print the Board
 void printSituation(Game& game);	//Print all relevant information
 void printPossibleMoves(Game& game);	//Print all moves that are possible for the current Player
-void printChosenGame(bool yellowAIExists, bool redAIExists); //Print the Game Mode, that was chosen
+void printChosenGame(int gameMode); //Print the Game Mode, that was chosen
 

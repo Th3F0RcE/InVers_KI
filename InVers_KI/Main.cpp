@@ -9,8 +9,10 @@
 //----------------------------------------------------------------------------
 Game* current_game = NULL;
 
-ArtificialIntelligence* yellowAI;
-ArtificialIntelligence* redAI;
+ArtificialIntelligence* yellowAI = NULL;
+ArtificialIntelligence* redAI = NULL;
+
+int sleepTimer = 3000;
 
 //----------------------------------------------------------------------------
 // Start New Game
@@ -25,12 +27,12 @@ void newGame()
 	//If there already exists a yellow AI, delete it
 	if (NULL != yellowAI)
 	{
-		delete yellowAI;
+		yellowAI = NULL;
 	}
 	//If there already exists a red AI, delete it
 	if (NULL != redAI)
 	{
-		delete redAI;
+		redAI = NULL;
 	}
 	
 	//Create a new Game
@@ -59,31 +61,37 @@ void newGame()
 	//Variable to check if the AI's exist
 	bool yellowAIExists = false; 
 	bool redAIExists = false;
+#
+	//Variable to store the current Game Mode
+	int gameMode = 1;
 
 	switch (input[0])
 	{
 		//1 = PVP
 	case '1':
 		inputCorrect = true;
+		gameMode = Game::PVP;
 		break;
 		//2 = PVE
 	case '2':
 		inputCorrect = true;
 		redAI = new ArtificialIntelligence();
-		redAIExists = true;
+		gameMode = Game::PVE;
 		break;
 		//3 = EVE
 	case '3':
 		inputCorrect = true;
 		redAI = new ArtificialIntelligence();
 		yellowAI = new ArtificialIntelligence();
-		redAIExists = true;
-		yellowAIExists = true;
+		gameMode = Game::EVE;
 		break;
 
 	default:
 		std::cout << "Invalid input!";
 	}
+
+	//Change the Game Mode according to the User-Input
+	current_game->changeGameMode(gameMode);
 
 	//If the User-Input was correct, "open" the game
 	if (inputCorrect)
@@ -91,7 +99,7 @@ void newGame()
 		clearScreen();
 		printLogo();
 		printBoard(*current_game);
-		printChosenGame(yellowAIExists, redAIExists);
+		printChosenGame(current_game->getCurrentGameMode());
 	}
 }
 
@@ -107,9 +115,6 @@ void insertPiece()
 	std::string LC;
 	std::string number;
 	std::string direction;
-
-	//ai = new ArtificialIntelligence();
-
 
 	//Get user input for if they want to move a line or a column
 	std::cout << "Do you want to move a Line(horizontal) or a Column(vertical)?\n";
@@ -261,7 +266,6 @@ void insertPiece()
 		//Check if a Player won the round
 		current_game->checkForWinner();
 	}
-	
 	return;
 }
 
@@ -280,83 +284,126 @@ int main(int argc, char* argv[])
 	while (run)
 	{
 		printMessage();
-		printMenu();
 
-		if (yellowAI != NULL)
+		if (current_game == NULL || (current_game != NULL && (current_game->getCurrentGameMode() == Game::PVP ||
+			(current_game->getCurrentGameMode() == Game::PVE && current_game->getCurrentTurn() == Game::YELLOW_PLAYER))))
 		{
-			//continue;
-		}
+			printMenu();
 
-		//get input from user
-		std::cout << "type here: ";
-		getline(std::cin, input);
+			//get input from user
+			std::cout << "type here: ";
+			getline(std::cin, input);
 
-		//If input is longer than one character, print Error-Message
-		if (input.length() != 1)
-		{
-			std::cout << "Invalid input, try to write one letter only!\n\n";
-			continue;
-		}
-
-
-		switch (input[0])
-		{
-			//Start new Game
-			case 'N':
-			case 'n':
+			//If input is longer than one character, print Error-Message
+			if (input.length() != 1)
 			{
-				newGame();
+				std::cout << "Invalid input, try to write one letter only!\n\n";
+				continue;
 			}
-			break;
 
-			//Make a move
-			case 'M':
-			case 'm':
+			//Handle the User-Input
+			switch (input[0])
 			{
-				if (current_game != NULL)
+				//Start new Game
+				case 'N':
+				case 'n':
 				{
-					//If the game is already finished, print Message
-					if (current_game->isFinished())
+					newGame();
+				}
+				break;
+
+				//Make a move
+				case 'M':
+				case 'm':
+				{
+					if (current_game != NULL)
 					{
-						std::cout << "This game has already finished!\n";
+						//If the game is already finished, print Message
+						if (current_game->isFinished())
+						{
+							std::cout << "This game has already finished!\n";
+						}
+						else if (current_game->getCurrentGameMode() == Game::PVP || (current_game->getCurrentGameMode() == Game::PVE && current_game->getCurrentTurn() == Game::YELLOW_PLAYER))
+						{
+							insertPiece();
+							printLogo();
+							printBoard(*current_game);
+							printSituation(*current_game);
+						}
 					}
-					else
+				}
+				break;
+
+				//Print all possible moves
+				case 'P':
+				case 'p':
+				{
+					if (current_game != NULL)
 					{
-						insertPiece();
-						printLogo();
-						printBoard(*current_game);
-						printSituation(*current_game);
+						printPossibleMoves(*current_game);
+					}
+				}
+				break;
+
+				//Print the rules
+				case 'R':
+				case 'r':
+				{
+					printRules();
+				}
+				break;
+
+				//Quit
+				case 'Q':
+				case 'q':
+				{
+					run = false;
+				}
+				break;
+			}
+		}
+		else
+		{
+			if (current_game->getCurrentGameMode() == Game::PVE)
+			{
+				redAI->chooseStrategy('r');
+			}
+			if (current_game->getCurrentGameMode() == Game::EVE)
+			{
+				redAI->chooseStrategy('r');
+				yellowAI->chooseStrategy('r');
+			}
+
+			if (current_game->getCurrentTurn() == Game::YELLOW_PLAYER && current_game->getCurrentGameMode() == Game::EVE)
+			{
+				if (yellowAI->strategy == ArtificialIntelligence::RANDOM)
+				{
+					yellowAI->makeMove(*current_game);
+				}
+			}
+			else
+			{
+				if (current_game->getCurrentTurn() == Game::RED_PLAYER)
+				{
+					if (redAI->strategy == ArtificialIntelligence::RANDOM)
+					{
+						if (current_game->getCurrentGameMode() == Game::PVE)
+						{
+							Sleep(2000);
+						}
+						redAI->makeMove(*current_game);
 					}
 				}
 			}
-			break;
 
-			//Print all possible moves
-			case 'P':
-			case 'p':
-			{
-				if (current_game != NULL)
-				{
-					printPossibleMoves(*current_game);
-				}
-			}
-			break;
+			printLogo();
+			printBoard(*current_game);
+			printSituation(*current_game);
 
-			//Print the rules
-			case 'R':
-			case 'r':
+			if (current_game->getCurrentGameMode() == Game::EVE)
 			{
-				printRules();
+				Sleep(sleepTimer);
 			}
-			break;
-
-			//Quit
-			case 'Q':
-			case 'q':
-			{
-				run = false;
-			}
-			break;
 		}
 	}
 	return 0;

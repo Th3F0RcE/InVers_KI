@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <deque>
+#include <Windows.h>
 
 constexpr auto CELL_SIZE = 6;
 constexpr auto YELLOW_CELL = 0;
