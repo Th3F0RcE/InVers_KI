@@ -89,6 +89,11 @@ std::vector<int> Game::getBoardVector()
 	return boardVector;
 }
 
+void Game::setBoardVector(std::vector<int> boardVector)
+{
+	this->boardVector = boardVector;
+}
+
 std::vector<int> Game::findLineValues(int line)
 {
 	//Variable to compare to the given line
@@ -355,24 +360,28 @@ void Game::deleteLoggedMove()
 	rounds.pop_back();
 }
 
-void Game::checkForWinner()
+int Game::checkForWinner()
 {
 	//Variable to return if someone has won
 	bool hasWon = false;
-	
+	int winner = 2;
+
 	//If 19 turned yellow stone on the board, yellow wins the game
 	if (yellowTurnedOnBoard >= 19)
 	{
+		winner = YELLOW_PLAYER;
 		appendToNextMessage("YELLOW HAS WON THE ROUND!\n");
-		hasWon = true;
+		//hasWon = true;
 	}
 	//If 19 turnes red stones on the board, red wins the game
 	if (redTurnedOnBoard >= 19)
 	{
+		winner = RED_PLAYER;
 		appendToNextMessage("RED HAS WON THE ROUND!\n");
-		hasWon = true;
+		//hasWon = true;
 	}
-	gameFinished = hasWon;
+	//gameFinished = hasWon;
+	return winner;
 }
 
 void Game::shiftRight(int line)

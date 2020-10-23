@@ -15,6 +15,7 @@ public:
 	bool isFinished();	//returns gameFinished
 	bool isMoveValid(char LC, int number, char direction);	//Checks if a move is valid
 	std::vector<int>getBoardVector();	//returns Board Vector
+	void setBoardVector(std::vector<int> boardVector);
 	std::vector<int>findLineValues(int line);	//find the vector-values in a given LINE  
 	std::vector<int>findColumnValues(int column);	//find the vector-values in a given COLUMN
 	std::vector<std::vector<int>> possibleMoves();	//Find all moves that are possible for the Player that is on turn
@@ -30,7 +31,7 @@ public:
 	void shiftUp(int column);	//Move a column up
 	void logMove(std::string &toRecord);	//Stores the move to print it later
 	void deleteLoggedMove();	//Deletes a move that was logged
-	void checkForWinner();	//Checks if someone has won
+	int checkForWinner();	//Checks if someone has won
 
 	//Saved stones
 	int yellowNextTurn;
