@@ -145,6 +145,37 @@ std::vector<int> Game::findColumnValues(int column)
 	return values;
 }
 
+std::vector<int> Game::findOuterValues()
+{
+	int iLine = 0;
+	int iColumn = 0;
+
+	std::vector<int> values;
+
+	for (unsigned int i = 0; i < this->boardVector.size(); i++)
+	{
+		if (iLine == 1 || iLine == 6 || ((iLine > 1 && iLine < 6) && (iColumn == 1 || iColumn == 6)))
+		{
+			values.push_back(i);
+		}
+		if (i % 8 == 7)
+		{
+			iLine += 1;
+			iColumn = 0;
+		}
+		else
+		{
+			iColumn += 1;
+		}
+	}
+
+	for (int j = 0; j < values.size(); j++)
+	{
+		std::cout << values.at(j) << std::endl;
+	}
+	return values;
+}
+
 std::vector<std::vector<int>> Game::possibleMoves()
 {
 	//Border cells of the Board of the game (NOT the outer border, but the last "movable" stones)

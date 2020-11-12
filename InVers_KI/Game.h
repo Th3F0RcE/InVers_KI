@@ -18,6 +18,7 @@ public:
 	void setBoardVector(std::vector<int> boardVector);
 	std::vector<int>findLineValues(int line);	//find the vector-values in a given LINE  
 	std::vector<int>findColumnValues(int column);	//find the vector-values in a given COLUMN
+	std::vector<int>findOuterValues();
 	std::vector<std::vector<int>> possibleMoves();	//Find all moves that are possible for the Player that is on turn
 	int getCurrentTurn();	//returns currentTurn
 	int getCurrentGameMode();	//Returns Current Game Mode

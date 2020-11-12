@@ -1,6 +1,7 @@
 #pragma once
 #include "includes.h"
 #include "Game.h"
+#include "UserInterface.h"
 
 constexpr auto MAX_MOVES = 24;
 
@@ -19,6 +20,6 @@ public:
 	void chooseStrategy(char cStrategy);
 	std::vector<int> chooseRandomMove(Game& game);
 	void makeMove(Game& game);
-	int minimax(Game& game, std::vector<int>boardVector, int currentPlayer, int depth, int alpha, int beta);
+	int minimax(Game& game, std::vector<int>boardVector, int currentPlayer, int yellowTurnedOnBoard, int yellowNextTurn, int redTurnedOnBoard, int redNextTurn, int depth, int alpha, int beta);
 };
 
