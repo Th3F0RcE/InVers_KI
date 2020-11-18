@@ -261,7 +261,7 @@ int Game::getCurrentGameMode()
 	return currentGameMode;
 }
 
-void Game::saveStone(char LC, int number, char direction)
+int Game::saveStone(char LC, int number, char direction)
 {
 	//Variable to store the vector-values
 	std::vector<int> values;
@@ -313,6 +313,8 @@ void Game::saveStone(char LC, int number, char direction)
 		pushedStone = RED_CELL_TURNED;
 	}
 
+	return pushedStone;
+	/*
 	//If Player Yellow is on turn, save the stone for yellow
 	if (currentTurn == YELLOW_PLAYER)
 	{
@@ -323,6 +325,7 @@ void Game::saveStone(char LC, int number, char direction)
 	{
 		redNextTurn = pushedStone;
 	}
+	*/
 }
 
 void Game::changeTurn()
@@ -344,8 +347,22 @@ void Game::changeGameMode(int gameMode)
 	currentGameMode = gameMode;
 }
 
-void Game::countUpTurned()
+void Game::countTurned()
 {
+	int yellowOnBoard = 0;
+	int redOnBoard = 0;
+
+	for (int i = 0; i < boardVector.size(); i++)
+	{
+		if (boardVector.at(i) == YELLOW_CELL_TURNED)
+		{
+			yellowOnBoard += 1;
+		}
+		if (boardVector.at(i) == RED_CELL_TURNED)
+		{
+			redOnBoard += 1;
+		}
+	}
 	//If Player Yellow is on turn, count up the value for Yellow
 	if (currentTurn == YELLOW_PLAYER)
 	{
@@ -451,8 +468,8 @@ void Game::shiftRight(int line)
 			this->boardVector.at(lineValues.at(i)) = this->boardVector.at(lineValues.at(i - 1));
 		}
 	}
-	countUpTurned();
-	changeTurn();
+	countTurned();
+	//changeTurn();
 }
 
 void Game::shiftLeft(int line)
@@ -491,8 +508,8 @@ void Game::shiftLeft(int line)
 			this->boardVector.at(lineValues.at(i)) = this->boardVector.at(lineValues.at(i + 1));
 		}
 	}
-	countUpTurned();
-	changeTurn();
+	countTurned();
+	//changeTurn();
 }
 
 void Game::shiftDown(int column)
@@ -531,8 +548,8 @@ void Game::shiftDown(int column)
 			this->boardVector.at(columnValues.at(i)) = this->boardVector.at(columnValues.at(i - 1));
 		}
 	}
-	countUpTurned();
-	changeTurn();
+	countTurned();
+	//changeTurn();
 }
 
 void Game::shiftUp(int column)
@@ -571,8 +588,8 @@ void Game::shiftUp(int column)
 			this->boardVector.at(columnValues.at(i)) = this->boardVector.at(columnValues.at(i + 1));
 		}
 	}
-	countUpTurned();
-	changeTurn();
+	countTurned();
+	//changeTurn();
 }
 
 

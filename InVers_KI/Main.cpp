@@ -237,7 +237,7 @@ void insertPiece()
 		current_game->logMove(toRecord);
 
 		//Save the Stone that will be pushed out for the next turn
-		current_game->saveStone(position[0], position[1] - '0', position[2]);
+		int pushedStone = current_game->saveStone(position[0], position[1] - '0', position[2]);
 
 		//Move the stones on the board based on the user input
 		if (std::tolower(position[0]) == 'l')
@@ -262,6 +262,17 @@ void insertPiece()
 				current_game->shiftDown(position[1] - '0');
 			}
 		}
+
+		if (current_game->getCurrentTurn() == Game::YELLOW_PLAYER)
+		{
+			current_game->yellowNextTurn = pushedStone;
+		}
+		else
+		{
+			current_game->redNextTurn = pushedStone;
+		}
+
+		current_game->changeTurn();
 
 		//Check if a Player won the round
 		current_game->checkForWinner();
