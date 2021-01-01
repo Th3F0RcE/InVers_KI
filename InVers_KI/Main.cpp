@@ -390,9 +390,8 @@ int main(int argc, char* argv[])
 			{
 				if (yellowAI->strategy == ArtificialIntelligence::RANDOM)
 				{
-					current_game->findOuterValues();
 					int minimax = yellowAI->minimax(*current_game, current_game->getBoardVector(), current_game->getCurrentTurn(),current_game->yellowTurnedOnBoard,current_game->yellowNextTurn,
-								  current_game->redTurnedOnBoard, current_game->redNextTurn, 3,-1,1);
+								  current_game->redTurnedOnBoard, current_game->redNextTurn, 0);
 					yellowAI->makeMove(*current_game);
 				}
 			}

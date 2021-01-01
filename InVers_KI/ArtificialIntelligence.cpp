@@ -3,6 +3,17 @@
 ArtificialIntelligence::ArtificialIntelligence()
 {
 	strategy = RANDOM;
+	boardWeightings =
+	{
+		0,	0,	0,	0,	0,	0,	0,	0,
+		0,	80,	40,	35,	35,	40,	80,	0,
+		0,	40,	20,	20,	20,	20,	40,	0,
+		0,	35,	20,	10,	10,	20,	35,	0,
+		0,	35,	20,	10,	10,	20,	35,	0,
+		0,	40,	20,	20,	20,	20,	40,	0,
+		0,	80,	40,	35,	35,	40,	80,	0,
+		0,	0,	0,	0,	0,	0,	0,	0
+	};
 }
 
 void ArtificialIntelligence::chooseStrategy(char cStrategy)
@@ -41,7 +52,7 @@ void ArtificialIntelligence::makeMove(Game& game)
 	{
 		toRecord += "RED ";
 	}
-
+	
 	toRecord += "moved ";
 
 	if (strategy == RANDOM)
@@ -87,10 +98,92 @@ void ArtificialIntelligence::makeMove(Game& game)
 	}
 
 	game.checkForWinner();
+	game.changeTurn();
 }
 
+int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int currentPlayer, int yellowTurnedOnBoard, int yellowNextTurn, int redTurnedOnBoard, int redNextTurn, int depth)
+{
+	std::vector<int>mBoardVector = boardVector;
+	int mPlayer = currentPlayer;
+	int mYellowTurnedOnBoard = yellowTurnedOnBoard;
+	int mRedTurnedOnBoard = redTurnedOnBoard;
+	int mYellowNextTurn = yellowNextTurn;
+	int mRedNextTurn = redNextTurn;
+	int mDepth = depth;
+	int mWinner = game.checkForWinner();
+
+
+	//=============EVALUATE TURN=================
+	if (mDepth == 0 || mWinner != 2)
+	{
+		if (mWinner == 0)
+		{
+			if (currentPlayer == Game::YELLOW_PLAYER)
+			{
+				return 1000;
+			}
+			else
+			{
+				return -1000;
+			}
+		}
+		if (mWinner == 1)
+		{
+			if (currentPlayer == Game::RED_PLAYER)
+			{
+				return 1000;
+			}
+			else
+			{
+				return -1000;
+			}
+		}
+	}
+
+	int points = 0;
+
+	for (int i = 0; i < boardVector.size(); i++)
+	{
+		if ((currentPlayer == Game::YELLOW_PLAYER && (boardVector.at(i) == 0 || boardVector.at(i) == 3)) ||
+			(currentPlayer == Game::RED_PLAYER && (boardVector.at(i) == 1 || boardVector.at(i) == 4)))
+		{
+			points += boardWeightings.at(i);
+		}
+	}
+	std::cout << points << std::endl;
+	return points;
+	//=============EVALUATE TURN=================
+
+	std::vector<std::vector<int>> allMoves = game.possibleMoves();
+
+	for (int i = 0; i < allMoves.size(); i++)
+	{
+		std::vector<int>currentMove = allMoves.at(i);
+
+		//If the current move shifts the Board to the LEFT, call the according function
+		if (currentMove.at(1) == LEFT)
+		{
+			game.shiftLeft(currentMove.at(0));
+		}
+		//If the current move shifts the Board to the RIGHT, call the according function
+		else if (currentMove.at(1) == RIGHT)
+		{
+			game.shiftRight(currentMove.at(0));
+		}
+		//If the current move shifts the Board UP, call the according function
+		else if (currentMove.at(1) == UP)
+		{
+			game.shiftUp(currentMove.at(0));
+		}
+		//If the current move shifts the Board DOWN, call the according function
+		else if (currentMove.at(1) == DOWN)
+		{
+			game.shiftDown(currentMove.at(0));
+		}
+	}
+}
 //TODO
-int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int currentPlayer, int yellowTurnedOnBoard, int yellowNextTurn, int redTurnedOnBoard, int redNextTurn, int depth, int alpha, int beta)
+/*int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int currentPlayer, int yellowTurnedOnBoard, int yellowNextTurn, int redTurnedOnBoard, int redNextTurn, int depth, int alpha, int beta)
 {
 	//Variables to store the game BEFORE going through all moves
 	//Will be restored after
@@ -185,15 +278,15 @@ int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int
 				}
 			}
 		}
-		//If the current Player is the winner, return 100
+		//If the current Player is the winner, return 1000
 		else if (mWinner == currentPlayer)
 		{
-			return 100;
+			return 1000;
 		}
-		//If the enemy Player is the winner, return -100
+		//If the enemy Player is the winner, return -1000
 		else
 		{
-			return -100;
+			return -1000;
 		}
 	}
 
@@ -227,7 +320,6 @@ int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int
 			game.shiftDown(currentMove.at(0));
 		}
 
-		printBoard(game);
 		//Recursive call on the function until the depth is 0
 		results = minimax(game, mBoardVector, currentPlayer, mYellowTurnedOnBoard, mYellowNextTurn, mRedTurnedOnBoard, mRedNextTurn, mDepth - 1, mAlpha, mBeta);
 
@@ -296,4 +388,4 @@ int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int
 	{
 		return beta;
 	}
-}
+}*/
