@@ -1,6 +1,7 @@
 #pragma once
 #include "includes.h"
 
+
 class Game
 {
 private:
@@ -21,6 +22,7 @@ public:
 	std::vector<int>findOuterValues();
 	std::vector<std::vector<int>> possibleMoves();	//Find all moves that are possible for the Player that is on turn
 	int getCurrentTurn();	//returns currentTurn
+	int getEnemy();
 	int getCurrentGameMode();	//Returns Current Game Mode
 	int saveStone(char LC, int number, char direction);	//Saves the stone that is pushed out
 	void changeTurn();	//Change the turn
@@ -63,5 +65,6 @@ public:
 	};
 
 	std::deque<Round> rounds;
+	int activePlayer;
 };
 

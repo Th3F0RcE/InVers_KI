@@ -256,6 +256,18 @@ int Game::getCurrentTurn()
 	return currentTurn;
 }
 
+int Game::getEnemy()
+{
+	if (currentTurn == YELLOW_PLAYER)
+	{
+		return RED_PLAYER;
+	}
+	else
+	{
+		return YELLOW_PLAYER;
+	}
+}
+
 int Game::getCurrentGameMode()
 {
 	return currentGameMode;

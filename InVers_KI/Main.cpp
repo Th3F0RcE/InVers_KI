@@ -383,20 +383,22 @@ int main(int argc, char* argv[])
 			if (current_game->getCurrentGameMode() == Game::EVE)
 			{
 				redAI->chooseStrategy('r');
-				yellowAI->chooseStrategy('r');
+				yellowAI->chooseStrategy('m');
 			}
 
 			if (current_game->getCurrentTurn() == Game::YELLOW_PLAYER && current_game->getCurrentGameMode() == Game::EVE)
 			{
-				if (yellowAI->strategy == ArtificialIntelligence::RANDOM)
+				current_game->activePlayer = Game::YELLOW_PLAYER;
+				if (yellowAI->strategy == ArtificialIntelligence::MINIMAX)
 				{
-					int minimax = yellowAI->minimax(*current_game, current_game->getBoardVector(), current_game->getCurrentTurn(),current_game->yellowTurnedOnBoard,current_game->yellowNextTurn,
-								  current_game->redTurnedOnBoard, current_game->redNextTurn, 1);
+					//int minimax = yellowAI->minimax(*current_game, current_game->getBoardVector(), current_game->getCurrentTurn(),current_game->yellowTurnedOnBoard,current_game->yellowNextTurn,
+								  //current_game->redTurnedOnBoard, current_game->redNextTurn, 1);
 					yellowAI->makeMove(*current_game);
 				}
 			}
 			else
 			{
+				current_game->activePlayer = Game::RED_PLAYER;
 				if (current_game->getCurrentTurn() == Game::RED_PLAYER)
 				{
 					if (redAI->strategy == ArtificialIntelligence::RANDOM)
