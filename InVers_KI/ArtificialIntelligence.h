@@ -12,10 +12,11 @@ public:
 	enum Strategies
 	{
 		RANDOM = 0,
-		ALPHABETA = 1
+		MINIMAX = 1
 	};
 
 	int strategy;
+	int depthIntelligence;
 	std::vector<int> boardWeightings;
 
 	void chooseStrategy(char cStrategy);

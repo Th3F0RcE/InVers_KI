@@ -22,9 +22,9 @@ void ArtificialIntelligence::chooseStrategy(char cStrategy)
 	{
 		strategy = RANDOM;
 	}
-	else if (std::tolower(cStrategy) == 'a')
+	else if (std::tolower(cStrategy) == 'm')
 	{
-		strategy = ALPHABETA;
+		strategy = MINIMAX;
 	}
 }
 
@@ -42,7 +42,9 @@ std::vector<int> ArtificialIntelligence::chooseRandomMove(Game& game)
 void ArtificialIntelligence::makeMove(Game& game)
 {
 	std::vector<int> move;
+	std::vector<std::vector<int>> allMoves = game.possibleMoves();
 	std::string toRecord = "Player ";
+	int results;
 
 	if (game.getCurrentTurn() == Game::YELLOW_PLAYER)
 	{
@@ -60,6 +62,61 @@ void ArtificialIntelligence::makeMove(Game& game)
 		move = chooseRandomMove(game);
 	}
 
+	if (strategy == MINIMAX)
+	{
+		std::vector<int> currentMove;
+		std::vector<int> saveBoard = game.getBoardVector();
+		std::vector<std::vector<int>> moveChoices;
+		int bestMove = -1;
+
+		for (int i = 0; i < allMoves.size(); i++)
+		{
+			currentMove = allMoves.at(i);
+
+			//If the current move shifts the Board to the LEFT, call the according function
+			if (currentMove.at(1) == LEFT)
+			{
+				game.shiftLeft(currentMove.at(0));
+			}
+			//If the current move shifts the Board to the RIGHT, call the according function
+			else if (currentMove.at(1) == RIGHT)
+			{
+				game.shiftRight(currentMove.at(0));
+			}
+			//If the current move shifts the Board UP, call the according function
+			else if (currentMove.at(1) == UP)
+			{
+				game.shiftUp(currentMove.at(0));
+			}
+			//If the current move shifts the Board DOWN, call the according function
+			else if (currentMove.at(1) == DOWN)
+			{
+				game.shiftDown(currentMove.at(0));
+			}
+
+			results = minimax(game, game.getBoardVector(), game.getCurrentTurn(), game.yellowTurnedOnBoard, game.yellowNextTurn, game.redTurnedOnBoard, game.redNextTurn, depthIntelligence);
+
+			game.setBoardVector(saveBoard);
+
+			if (results > bestMove)
+			{
+				bestMove = results;
+				moveChoices.clear();
+				moveChoices.push_back(currentMove);
+			}
+
+			if (results == bestMove)
+			{
+				moveChoices.push_back(currentMove);
+			}
+		}
+
+		int randomIndex = rand() % moveChoices.size();
+
+		move = moveChoices.at(randomIndex);
+	}
+
+	//=====================Make the actual Move========================
 	if (move.at(1) == LEFT)
 	{
 		toRecord += "LINE ";
@@ -96,6 +153,7 @@ void ArtificialIntelligence::makeMove(Game& game)
 		game.saveStone('c', move.at(0), 'd');
 		game.shiftDown(move.at(0));
 	}
+	//=====================Make the actual Move========================
 
 	game.checkForWinner();
 	game.changeTurn();
@@ -199,7 +257,8 @@ int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int
 		game.yellowTurnedOnBoard = yellowTurnedOnBoard;
 		game.redTurnedOnBoard = redTurnedOnBoard;
 	}
-	//int max = *std::max_element(results.begin(), results.end());
+	std::pair<std::vector<int>, int> moveWithScore{ bestMove, max };
+
 	return max;
 }
 //TODO
