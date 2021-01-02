@@ -138,23 +138,26 @@ int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int
 				return -1000;
 			}
 		}
-	}
 
-	int points = 0;
+		int points = 0;
 
-	for (int i = 0; i < boardVector.size(); i++)
-	{
-		if ((currentPlayer == Game::YELLOW_PLAYER && (boardVector.at(i) == 0 || boardVector.at(i) == 3)) ||
-			(currentPlayer == Game::RED_PLAYER && (boardVector.at(i) == 1 || boardVector.at(i) == 4)))
+		for (int i = 0; i < boardVector.size(); i++)
 		{
-			points += boardWeightings.at(i);
+			if ((currentPlayer == Game::YELLOW_PLAYER && (boardVector.at(i) == 3)) ||
+				(currentPlayer == Game::RED_PLAYER && (boardVector.at(i) == 4)))
+			{
+				points += boardWeightings.at(i);
+			}
 		}
+		std::cout << points << std::endl;
+		return points;
 	}
-	std::cout << points << std::endl;
-	return points;
 	//=============EVALUATE TURN=================
 
 	std::vector<std::vector<int>> allMoves = game.possibleMoves();
+	std::vector<int> bestMove;
+	std::vector<int>results;
+	int max = 0;
 
 	for (int i = 0; i < allMoves.size(); i++)
 	{
@@ -180,7 +183,24 @@ int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int
 		{
 			game.shiftDown(currentMove.at(0));
 		}
+	
+		printBoard(game);
+		results.push_back(minimax(game, game.getBoardVector(), currentPlayer, mYellowTurnedOnBoard, mYellowNextTurn, mRedTurnedOnBoard, mRedNextTurn, mDepth - 1));
+		
+		if (results.back() > max)
+		{
+			max = results.back();
+			bestMove = currentMove;
+		}
+
+		game.setBoardVector(boardVector);
+		game.yellowNextTurn = yellowNextTurn;
+		game.redNextTurn = redNextTurn;
+		game.yellowTurnedOnBoard = yellowTurnedOnBoard;
+		game.redTurnedOnBoard = redTurnedOnBoard;
 	}
+	//int max = *std::max_element(results.begin(), results.end());
+	return max;
 }
 //TODO
 /*int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int currentPlayer, int yellowTurnedOnBoard, int yellowNextTurn, int redTurnedOnBoard, int redNextTurn, int depth, int alpha, int beta)
