@@ -12,7 +12,7 @@ Game* current_game = NULL;
 ArtificialIntelligence* yellowAI = NULL;
 ArtificialIntelligence* redAI = NULL;
 
-int sleepTimer = 3000;
+int sleepTimer = 50;
 
 //----------------------------------------------------------------------------
 // Start New Game
@@ -382,7 +382,7 @@ int main(int argc, char* argv[])
 			}
 			if (current_game->getCurrentGameMode() == Game::EVE)
 			{
-				redAI->chooseStrategy('r');
+				redAI->chooseStrategy('m');
 				yellowAI->chooseStrategy('m');
 			}
 
@@ -401,6 +401,10 @@ int main(int argc, char* argv[])
 				current_game->activePlayer = Game::RED_PLAYER;
 				if (current_game->getCurrentTurn() == Game::RED_PLAYER)
 				{
+					if (redAI->strategy == ArtificialIntelligence::MINIMAX)
+					{
+						redAI->makeMove(*current_game);
+					}
 					if (redAI->strategy == ArtificialIntelligence::RANDOM)
 					{
 						if (current_game->getCurrentGameMode() == Game::PVE)

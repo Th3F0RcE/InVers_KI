@@ -6,12 +6,24 @@ ArtificialIntelligence::ArtificialIntelligence()
 	boardWeightings =
 	{
 		0,	0,	0,	0,	0,	0,	0,	0,
-		0,	80,	40,	35,	35,	40,	80,	0,
-		0,	40,	20,	20,	20,	20,	40,	0,
+		0,	100,50,	35,	35,	50,	100,0,
+		0,	50,	20,	20,	20,	20,	50,	0,
 		0,	35,	20,	10,	10,	20,	35,	0,
 		0,	35,	20,	10,	10,	20,	35,	0,
-		0,	40,	20,	20,	20,	20,	40,	0,
-		0,	80,	40,	35,	35,	40,	80,	0,
+		0,	50,	20,	20,	20,	20,	50,	0,
+		0,	100,40,	35,	35,	50,	100,0,
+		0,	0,	0,	0,	0,	0,	0,	0
+	};
+
+	boardWeightingsUnturned =
+	{
+		0,	0,	0,	0,	0,	0,	0,	0,
+		0,	100,80,	80,	80,	80,	100,0,
+		0,	80,	20,	20,	20,	20,	80,	0,
+		0,	80,	20,	0,	0,	20,	80,	0,
+		0,	80,	20,	0,	0,	20,	80,	0,
+		0,	80,	20,	20,	20,	20,	80,	0,
+		0,	100,80,	80,	80,	80,	100,0,
 		0,	0,	0,	0,	0,	0,	0,	0
 	};
 
@@ -67,39 +79,34 @@ void ArtificialIntelligence::makeMove(Game& game)
 
 	if (strategy == MINIMAX)
 	{
-		std::vector<int> currentMove;
 		std::vector<int> saveBoard = game.getBoardVector();
+		int savePlayer = game.getCurrentTurn();
+		int saveYellowNextTurn = game.yellowNextTurn;
+		int saveYellowTurnedOnBoard = game.yellowTurnedOnBoard;
+		int saveRedNextTurn = game.redNextTurn;
+		int saveRedTurnedOnBoard = game.redTurnedOnBoard;
+
 		std::vector<std::vector<int>> moveChoices;
+		std::vector<int> currentMove;
 		int bestMove = -1;
 
 		for (int i = 0; i < allMoves.size(); i++)
 		{
 			currentMove = allMoves.at(i);
 
-			//If the current move shifts the Board to the LEFT, call the according function
-			if (currentMove.at(1) == LEFT)
-			{
-				game.shiftLeft(currentMove.at(0));
-			}
-			//If the current move shifts the Board to the RIGHT, call the according function
-			else if (currentMove.at(1) == RIGHT)
-			{
-				game.shiftRight(currentMove.at(0));
-			}
-			//If the current move shifts the Board UP, call the according function
-			else if (currentMove.at(1) == UP)
-			{
-				game.shiftUp(currentMove.at(0));
-			}
-			//If the current move shifts the Board DOWN, call the according function
-			else if (currentMove.at(1) == DOWN)
-			{
-				game.shiftDown(currentMove.at(0));
-			}
+			moveHelper(game, currentMove);
 
-			results = minimax(game, game.getBoardVector(), game.getEnemy(), game.yellowTurnedOnBoard, game.yellowNextTurn, game.redTurnedOnBoard, game.redNextTurn, depthIntelligence, -1, 1);
+			results = minimax(game, depthIntelligence - 1, -1, 1);
 
 			game.setBoardVector(saveBoard);
+			if (savePlayer != game.getCurrentTurn())
+			{
+				game.changeTurn();
+			}
+			game.yellowNextTurn = saveYellowNextTurn;
+			game.yellowTurnedOnBoard = saveYellowTurnedOnBoard;
+			game.redNextTurn = saveRedNextTurn;
+			game.redTurnedOnBoard = saveRedTurnedOnBoard;
 
 			if (results > bestMove)
 			{
@@ -162,23 +169,23 @@ void ArtificialIntelligence::makeMove(Game& game)
 	game.changeTurn();
 }
 
-int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int currentPlayer, int yellowTurnedOnBoard, int yellowNextTurn, int redTurnedOnBoard, int redNextTurn, int depth, int alpha, int beta)
+int ArtificialIntelligence::minimax(Game& game, int depth, int alpha, int beta)
 {
-	std::vector<int>mBoardVector = boardVector;
-	int mPlayer = currentPlayer;
-	int mYellowTurnedOnBoard = yellowTurnedOnBoard;
-	int mRedTurnedOnBoard = redTurnedOnBoard;
-	int mYellowNextTurn = yellowNextTurn;
-	int mRedNextTurn = redNextTurn;
-	int mDepth = depth;
+	std::vector<int>saveBoardVector = game.getBoardVector();
+	int savePlayer = game.getCurrentTurn();
+	int saveYellowTurnedOnBoard = game.yellowTurnedOnBoard;
+	int saveRedTurnedOnBoard = game.redTurnedOnBoard;
+	int saveYellowNextTurn = game.yellowNextTurn;
+	int saveRedNextTurn = game.redNextTurn;
+
 	int mWinner = game.checkForWinner();
 
 	//=============EVALUATE TURN=================
-	if (mDepth == 0 || mWinner != 2)
+	if (depth == 0 || mWinner != 2)
 	{
 		if (mWinner == 0)
 		{
-			if (currentPlayer == Game::YELLOW_PLAYER)
+			if (game.activePlayer == Game::YELLOW_PLAYER)
 			{
 				return 1000;
 			}
@@ -189,7 +196,7 @@ int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int
 		}
 		if (mWinner == 1)
 		{
-			if (currentPlayer == Game::RED_PLAYER)
+			if (game.activePlayer == Game::RED_PLAYER)
 			{
 				return 1000;
 			}
@@ -201,24 +208,33 @@ int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int
 
 		int points = 0;
 
-		for (int i = 0; i < boardVector.size(); i++)
+		for (int i = 0; i < game.getBoardVector().size(); i++)
 		{
-			if ((game.getCurrentTurn() == Game::YELLOW_PLAYER && (boardVector.at(i) == 3)) ||
-				(game.getCurrentTurn() == Game::RED_PLAYER && (boardVector.at(i) == 4)))
+			if ((game.activePlayer == Game::YELLOW_PLAYER && (game.getBoardVector().at(i) == 3)) ||
+				(game.activePlayer == Game::RED_PLAYER && (game.getBoardVector().at(i) == 4)))
 			{
 				points += boardWeightings.at(i);
+
+				if (game.activePlayer == Game::YELLOW_PLAYER)
+				{
+					points += game.yellowTurnedOnBoard * 50;
+				}
+				else
+				{
+					points += game.redTurnedOnBoard * 50;
+				}
 			}
 		}
-		std::cout << points << std::endl;
+		//std::cout << points << std::endl;
 		return points;
 	}
 	//=============EVALUATE TURN=================
-	game.changeTurn();
 
 	std::vector<std::vector<int>> allMoves = game.possibleMoves();
 	std::vector<int> bestMove;
 	int results;
 	int max = 0;
+	int min = 10000;
 
 	for (int i = 0; i < allMoves.size(); i++)
 	{
@@ -228,9 +244,34 @@ int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int
 
 		printBoard(game);
 		
-		results = minimax(game, game.getBoardVector(), game.getCurrentTurn(), game.yellowTurnedOnBoard, game.yellowNextTurn, game.redTurnedOnBoard, game.redNextTurn, mDepth - 1, alpha, beta);
+		results = minimax(game, depth - 1, alpha, beta);
 		
+		game.setBoardVector(saveBoardVector);
+		if (game.getCurrentTurn() != savePlayer)
+		{
+			game.changeTurn();
+		}
+		game.yellowNextTurn = saveYellowNextTurn;
+		game.redNextTurn = saveRedNextTurn;
+		game.yellowTurnedOnBoard = saveYellowTurnedOnBoard;
+		game.redTurnedOnBoard = saveRedTurnedOnBoard;
+
 		if (game.activePlayer == game.getCurrentTurn())
+		{
+			if (results > max)
+			{
+				max = results;
+			}
+		}
+		else
+		{
+			if (results < min)
+			{
+				min = results;
+			}
+		}
+		/*
+		if (game.activePlayer == game.getEnemy())
 		{
 			if (results > alpha)
 			{
@@ -254,15 +295,19 @@ int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int
 				return alpha;
 			}
 		}
-
-		game.setBoardVector(mBoardVector);
-		game.yellowNextTurn = mYellowNextTurn;
-		game.redNextTurn = mRedNextTurn;
-		game.yellowTurnedOnBoard = mYellowTurnedOnBoard;
-		game.redTurnedOnBoard = mRedTurnedOnBoard;
+		*/
 		
 	}
+	if (game.activePlayer == game.getCurrentTurn())
+	{
+		return max;
+	}
+	else
+	{
+		return min;
+	}
 
+	/*
 	if (game.activePlayer == game.getCurrentTurn())
 	{
 		return alpha;
@@ -271,6 +316,7 @@ int ArtificialIntelligence::minimax(Game& game, std::vector<int>boardVector, int
 	{
 		return beta;
 	}
+	*/
 }
 
 //Helper function for minimax algorithm
@@ -281,23 +327,27 @@ void ArtificialIntelligence::moveHelper(Game& game, std::vector<int> currentMove
 	{
 		game.shiftLeft(currentMove.at(0));
 		game.saveStone('l', currentMove[0], currentMove[1]);
+		game.changeTurn();
 	}
 	//If the current move shifts the Board to the RIGHT, call the according function
 	else if (currentMove.at(1) == RIGHT)
 	{
 		game.shiftRight(currentMove.at(0));
 		game.saveStone('r', currentMove[0], currentMove[1]);
+		game.changeTurn();
 	}
 	//If the current move shifts the Board UP, call the according function
 	else if (currentMove.at(1) == UP)
 	{
 		game.shiftUp(currentMove.at(0));
 		game.saveStone('u', currentMove[0], currentMove[1]);
+		game.changeTurn();
 	}
 	//If the current move shifts the Board DOWN, call the according function
 	else if (currentMove.at(1) == DOWN)
 	{
 		game.shiftDown(currentMove.at(0));
 		game.saveStone('d', currentMove[0], currentMove[1]);
+		game.changeTurn();
 	}
 }
