@@ -18,16 +18,16 @@ ArtificialIntelligence::ArtificialIntelligence()
 	boardWeightingsUnturned =
 	{
 		0,	0,	0,	0,	0,	0,	0,	0,
-		0,	100,80,	80,	80,	80,	100,0,
-		0,	80,	20,	20,	20,	20,	80,	0,
-		0,	80,	20,	0,	0,	20,	80,	0,
-		0,	80,	20,	0,	0,	20,	80,	0,
-		0,	80,	20,	20,	20,	20,	80,	0,
-		0,	100,80,	80,	80,	80,	100,0,
+		0,	100,100,100,100,100,100,0,
+		0,	100,-80,-80,-80,-80,100,0,
+		0,	100,-80,-100,-100,-80,100,0,
+		0,	100,-80,-100,-100,-80,100,0,
+		0,	100,-80,-80,-80,-80,100,0,
+		0,	100,100,100,100,100,100,0,
 		0,	0,	0,	0,	0,	0,	0,	0
 	};
 
-	depthIntelligence = 1;
+	depthIntelligence = 2;
 }
 
 void ArtificialIntelligence::chooseStrategy(char cStrategy)
@@ -60,6 +60,7 @@ void ArtificialIntelligence::makeMove(Game& game)
 	std::vector<std::vector<int>> allMoves = game.possibleMoves();
 	std::string toRecord = "Player ";
 	int results;
+	int pushedStone = 0;
 
 	if (game.getCurrentTurn() == Game::YELLOW_PLAYER)
 	{
@@ -88,7 +89,7 @@ void ArtificialIntelligence::makeMove(Game& game)
 
 		std::vector<std::vector<int>> moveChoices;
 		std::vector<int> currentMove;
-		int bestMove = -1;
+		int bestMove = -1000;
 
 		for (int i = 0; i < allMoves.size(); i++)
 		{
@@ -121,6 +122,7 @@ void ArtificialIntelligence::makeMove(Game& game)
 			}
 		}
 
+		//TODO EXCEPTION??????
 		int randomIndex = rand() % moveChoices.size();
 
 		move = moveChoices.at(randomIndex);
@@ -133,7 +135,7 @@ void ArtificialIntelligence::makeMove(Game& game)
 		toRecord += std::to_string(move.at(0));
 		toRecord += " LEFT.";
 		game.logMove(toRecord);
-		game.saveStone('l', move.at(0), 'l');
+		pushedStone = game.saveStone('l', move.at(0), 'l');
 		game.shiftLeft(move.at(0));
 	}
 	else if (move.at(1) == RIGHT)
@@ -142,7 +144,7 @@ void ArtificialIntelligence::makeMove(Game& game)
 		toRecord += std::to_string(move.at(0));
 		toRecord += " RIGHT.";
 		game.logMove(toRecord);
-		game.saveStone('l', move.at(0), 'r');
+		pushedStone = game.saveStone('l', move.at(0), 'r');
 		game.shiftRight(move.at(0));
 	}
 	else if (move.at(1) == UP)
@@ -151,7 +153,7 @@ void ArtificialIntelligence::makeMove(Game& game)
 		toRecord += std::to_string(move.at(0));
 		toRecord += " UP.";
 		game.logMove(toRecord);
-		game.saveStone('c', move.at(0), 'u');
+		pushedStone = game.saveStone('c', move.at(0), 'u');
 		game.shiftUp(move.at(0));
 	}
 	else if (move.at(1) == DOWN)
@@ -160,8 +162,17 @@ void ArtificialIntelligence::makeMove(Game& game)
 		toRecord += std::to_string(move.at(0));
 		toRecord += " DOWN.";
 		game.logMove(toRecord);
-		game.saveStone('c', move.at(0), 'd');
+		pushedStone = game.saveStone('c', move.at(0), 'd');
 		game.shiftDown(move.at(0));
+	}
+
+	if (game.getCurrentTurn() == Game::YELLOW_PLAYER)
+	{
+		game.yellowNextTurn = pushedStone;
+	}
+	else
+	{
+		game.redNextTurn = pushedStone;
 	}
 	//=====================Make the actual Move========================
 
@@ -187,22 +198,22 @@ int ArtificialIntelligence::minimax(Game& game, int depth, int alpha, int beta)
 		{
 			if (game.activePlayer == Game::YELLOW_PLAYER)
 			{
-				return 1000;
+				return 1000000;
 			}
 			else
 			{
-				return -1000;
+				return -1000000;
 			}
 		}
 		if (mWinner == 1)
 		{
 			if (game.activePlayer == Game::RED_PLAYER)
 			{
-				return 1000;
+				return 1000000;
 			}
 			else
 			{
-				return -1000;
+				return -1000000;
 			}
 		}
 
@@ -224,6 +235,12 @@ int ArtificialIntelligence::minimax(Game& game, int depth, int alpha, int beta)
 					points += game.redTurnedOnBoard * 50;
 				}
 			}
+
+			if (game.activePlayer == Game::YELLOW_PLAYER && game.getBoardVector().at(i) == 0 ||
+				game.activePlayer == Game::RED_PLAYER && game.getBoardVector().at(i) == 1)
+			{
+				points += boardWeightingsUnturned.at(i);
+			}
 		}
 		//std::cout << points << std::endl;
 		return points;
@@ -242,7 +259,7 @@ int ArtificialIntelligence::minimax(Game& game, int depth, int alpha, int beta)
 
 		moveHelper(game, currentMove);
 
-		printBoard(game);
+		//printBoard(game);
 		
 		results = minimax(game, depth - 1, alpha, beta);
 		

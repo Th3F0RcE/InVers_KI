@@ -17,6 +17,7 @@ public:
 	bool isMoveValid(char LC, int number, char direction);	//Checks if a move is valid
 	std::vector<int>getBoardVector();	//returns Board Vector
 	void setBoardVector(std::vector<int> boardVector);
+	void setFinished(bool finished);
 	std::vector<int>findLineValues(int line);	//find the vector-values in a given LINE  
 	std::vector<int>findColumnValues(int column);	//find the vector-values in a given COLUMN
 	std::vector<int>findOuterValues();

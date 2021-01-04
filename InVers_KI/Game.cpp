@@ -94,6 +94,18 @@ void Game::setBoardVector(std::vector<int> boardVector)
 	this->boardVector = boardVector;
 }
 
+void Game::setFinished(bool finished)
+{
+	if (finished)
+	{
+		gameFinished = true;
+	}
+	else
+	{
+		gameFinished = false;
+	}
+}
+
 std::vector<int> Game::findLineValues(int line)
 {
 	//Variable to compare to the given line
@@ -375,16 +387,9 @@ void Game::countTurned()
 			redOnBoard += 1;
 		}
 	}
-	//If Player Yellow is on turn, count up the value for Yellow
-	if (currentTurn == YELLOW_PLAYER)
-	{
-		yellowTurnedOnBoard += 1;
-	}
-	//If Player Red is on turn, count up the value for Red
-	else
-	{
-		redTurnedOnBoard += 1;
-	}
+	
+	yellowTurnedOnBoard = yellowOnBoard;
+	redTurnedOnBoard = redOnBoard;
 }
 
 void Game::logMove(std::string& toRecord)
@@ -426,20 +431,22 @@ int Game::checkForWinner()
 	bool hasWon = false;
 	int winner = 2;
 
+	
 	//If 19 turned yellow stone on the board, yellow wins the game
 	if (yellowTurnedOnBoard >= 19)
 	{
 		winner = YELLOW_PLAYER;
-		appendToNextMessage("YELLOW HAS WON THE ROUND!\n");
+		//appendToNextMessage("YELLOW HAS WON THE ROUND!\n");
 		//hasWon = true;
 	}
 	//If 19 turnes red stones on the board, red wins the game
 	if (redTurnedOnBoard >= 19)
 	{
 		winner = RED_PLAYER;
-		appendToNextMessage("RED HAS WON THE ROUND!\n");
+		//appendToNextMessage("RED HAS WON THE ROUND!\n");
 		//hasWon = true;
 	}
+	
 	//gameFinished = hasWon;
 	return winner;
 }

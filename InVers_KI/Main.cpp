@@ -275,7 +275,16 @@ void insertPiece()
 		current_game->changeTurn();
 
 		//Check if a Player won the round
-		current_game->checkForWinner();
+		if (current_game->checkForWinner() == 0)
+		{
+			appendToNextMessage("YELLOW HAS WON THE ROUND\n");
+			current_game->setFinished(true);
+		}
+		else if (current_game->checkForWinner() == 1)
+		{
+			appendToNextMessage("RED HAS WON THE ROUND\n");
+			current_game->setFinished(true);
+		}
 	}
 	return;
 }
@@ -375,6 +384,11 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
+			if(current_game->isFinished())
+			{
+				std::cout << "The game has already finished\n";
+				run = false;
+			}
 			//TODO
 			if (current_game->getCurrentGameMode() == Game::PVE)
 			{
@@ -419,6 +433,17 @@ int main(int argc, char* argv[])
 			printLogo();
 			printBoard(*current_game);
 			printSituation(*current_game);
+			//Check if a Player won the round
+			if (current_game->checkForWinner() == 0)
+			{
+				appendToNextMessage("YELLOW HAS WON THE ROUND\n");
+				current_game->setFinished(true);
+			}
+			else if (current_game->checkForWinner() == 1)
+			{
+				appendToNextMessage("RED HAS WON THE ROUND\n");
+				current_game->setFinished(true);
+			}
 
 			if (current_game->getCurrentGameMode() == Game::EVE)
 			{
